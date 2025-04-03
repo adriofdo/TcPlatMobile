@@ -24,6 +24,8 @@ export default function TabsLayout() {
   return (
     <Tabs screenOptions={{ tabBarStyle: { height: 60 } }}>
       <Tabs.Screen name="explore" options={{ title: 'Explore' }} />
+      <Tabs.Screen name="anagrafici" options={{ title: 'Anagrafici' }} />
+
     </Tabs>
   );
 }

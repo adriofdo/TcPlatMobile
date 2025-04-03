@@ -7,12 +7,11 @@ export async function executeQuery(query, values) {
     });
 
     const data = await response.json();
-    return data;
+    return data; // Includes .insertId if returned by backend
   } catch (error) {
     console.error('Database query failed:', error);
     return null;
   }
 }
 
-// ✅ Add a default export
 export default { executeQuery };

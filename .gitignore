@@ -28,3 +28,4 @@ replay_pid*
 
 expo-env.d.ts
 # @end expo-cli
+node_modules
