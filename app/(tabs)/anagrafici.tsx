@@ -93,11 +93,50 @@ export default function AnagraficiScreen() {
     }
   };
 
-  const handleCreateAccount = (anagrafica_id: number) => {
-    router.push({
-      pathname: '/creaAccount',
-      params: { id: anagrafica_id.toString() },
-    });
+  const handleCreateAccount = async (anagrafica_id: number) => {
+    try {
+      // 1. Check if user already exists
+      const checkRes = await executeQuery(
+        'SELECT * FROM Users WHERE anagrafica_id = ?',
+        [anagrafica_id]
+      );
+
+      if (checkRes?.length > 0) {
+        Alert.alert('⚠️ Attenzione', 'Esiste già un account per questa anagrafica.');
+        return;
+      }
+
+      // 2. Get anagrafica info
+      const person = data.find(p => p.anagrafica_id === anagrafica_id);
+      if (!person) {
+        Alert.alert('❌ Errore', 'Dati anagrafici non trovati.');
+        return;
+      }
+
+      const username = (person.nome+'.'+person.cognome).toLowerCase();
+      const password = 'TcUserCount123!';
+      const email = `${username}.${person.cognome.toLowerCase()}@example.com`;
+
+      // ✅ INSERT new user (without date_of_birth)
+      await executeQuery(
+        `INSERT INTO Users (username, password, email, role, anagrafica_id, state_acc)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [username, password, email, 'student', anagrafica_id, 1]
+      );
+
+      // ✅ Update AccCreato in Anagrafica
+      await executeQuery(
+        `UPDATE Anagrafica SET AccCreato = 1 WHERE anagrafica_id = ?`,
+        [anagrafica_id]
+      );
+
+      Alert.alert('✅ Account creato', `Utente: ${username} / ${password}`);
+      fetchAnagrafica(); // Refresh table
+
+    } catch (err: any) {
+      console.error('Create user error:', err?.message || err);
+      Alert.alert('❌ Errore', `Creazione account fallita.\n${err?.message || ''}`);
+    }
   };
 
   return (
