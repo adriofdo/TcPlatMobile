@@ -1,16 +1,15 @@
-// ✅ app/_layout.tsx
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from './AuthContext';
-import { Provider as PaperProvider } from 'react-native-paper'; // ← ADD THIS
+import { Provider as PaperProvider } from 'react-native-paper';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <PaperProvider> {/* ← WRAP EVERYTHING HERE */}
+    <PaperProvider>
       <AuthProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack>

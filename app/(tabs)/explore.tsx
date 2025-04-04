@@ -17,6 +17,12 @@ export default function ExploreScreen() {
         </TouchableOpacity>
       )}
 
+{role === 'teacher' && (
+        <TouchableOpacity style={styles.navButton} onPress={() => router.push('/(tabs)/creaevento')}>
+          <Text style={styles.navButtonText}>📋 Anagrafici</Text>
+        </TouchableOpacity>
+      )}
+
       <TouchableOpacity style={styles.logoutButton} onPress={logout}>
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
