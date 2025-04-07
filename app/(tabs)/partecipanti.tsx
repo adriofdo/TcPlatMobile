@@ -69,24 +69,27 @@ export default function EventiScreen() {
 
   const handlePartecipazione = async (evento_id: number, stato: 'SI' | 'NO') => {
     setEventi(prev => prev.map(e => e.evento_id === evento_id ? { ...e, loading: true } : e));
-
+  
     try {
       const userIdRes = await executeQuery(`SELECT user_id FROM Users WHERE username = ?`, [user]);
       const userId = userIdRes.results?.[0]?.user_id;
       if (!userId) throw new Error('User ID non trovato');
-
+  
+      // INSERT or UPDATE the participation
       await executeQuery(
-        `REPLACE INTO Partecipazioni (user_id, evento_id, stato) VALUES (?, ?, ?)`,
+        `INSERT INTO Partecipazioni (user_id, evento_id, stato)
+         VALUES (?, ?, ?)
+         ON DUPLICATE KEY UPDATE stato = VALUES(stato)`,
         [userId, evento_id, stato]
       );
-
+  
       const partecipantiRes = await executeQuery(
         `SELECT U.username FROM Partecipazioni P
          JOIN Users U ON U.user_id = P.user_id
          WHERE P.evento_id = ? AND P.stato = 'SI'`,
         [evento_id]
       );
-
+  
       setEventi(prev => prev.map(e =>
         e.evento_id === evento_id
           ? {
@@ -103,6 +106,7 @@ export default function EventiScreen() {
       setEventi(prev => prev.map(e => e.evento_id === evento_id ? { ...e, loading: false } : e));
     }
   };
+  
 
   const toggleDettagli = (evento_id: number) => {
     setEventi(prev => prev.map(e =>
