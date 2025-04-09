@@ -26,10 +26,11 @@ export default function LoginScreen() {
       const results = response?.results || [];
   
       if (results.length > 0) {
-        const user = results[0]; // ✅ get user data
-        const role = user.role;  // ✅ grab the role from DB
+        const user = results[0];       // ✅ Full user object from DB
+        const role = user.role;
+        const userId = user.user_id;   // ✅ Grab the user_id
   
-        await login(username, role); // ✅ store role in context
+        await login(username, role, userId); // ✅ Pass userId to AuthContext
         setLoginStatus('✅ Login Successful!');
         router.replace('/(tabs)/explore');
       } else {
